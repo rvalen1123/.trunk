@@ -9,12 +9,17 @@ import {
   TableRow,
   TableCell,
   Pagination,
+  Input,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
   Chip,
   ChipProps,
   Tooltip,
-  Button,
-} from "@nextui-org/react";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+} from "@heroui/react";
+import { EyeIcon, PencilIcon, TrashIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
 
 interface DataTableProps {
   columns: {

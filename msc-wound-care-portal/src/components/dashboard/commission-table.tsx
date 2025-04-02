@@ -8,18 +8,21 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Chip,
-  ChipProps,
-  Tooltip,
-  Button,
   Pagination,
-  User,
-} from "@nextui-org/react";
+  Input,
+  Button,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Chip,
+} from "@heroui/react";
 import {
   EyeIcon,
   CheckIcon,
   XMarkIcon,
   BanknotesIcon,
+  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
 
 interface Commission {

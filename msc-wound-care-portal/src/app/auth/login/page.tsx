@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -11,25 +11,78 @@ import {
   Divider,
   Link,
   Image,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { signIn } from "next-auth/react";
 
+/**
+ * Login page component
+ * Handles user authentication
+ * 
+ * @returns Login page component
+ */
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const handleLogin = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if user just registered
+    const registered = searchParams.get("registered");
+    if (registered) {
+      setSuccess("Registration successful! Please log in.");
+    }
+    
+    // Check if there's an error from NextAuth
+    const authError = searchParams.get("error");
+    if (authError) {
+      setError(
+        authError === "CredentialsSignin" 
+          ? "Invalid email or password" 
+          : "An error occurred during login"
+      );
+    }
+  }, [searchParams]);
+
+  /**
+   * Handles the login form submission
+   * 
+   * @param e - Form submission event
+   */
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSuccess("");
     setIsLoading(true);
 
-    // Simulate authentication
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (result?.error) {
+        setError(result.error === "CredentialsSignin" 
+          ? "Invalid email or password"
+          : result.error);
+        return;
+      }
+
+      // Successful login, redirect to dashboard
       router.push("/dashboard");
-    }, 1500);
+      router.refresh(); // Refresh to update auth session
+    } catch (err) {
+      setError("An unexpected error occurred");
+      console.error("Login error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -53,6 +106,16 @@ export default function LoginPage() {
           </div>
         </CardHeader>
         <CardBody>
+          {error && (
+            <div className="bg-danger-50 text-danger p-2 rounded mb-4 text-sm">
+              {error}
+            </div>
+          )}
+          {success && (
+            <div className="bg-success-50 text-success p-2 rounded mb-4 text-sm">
+              {success}
+            </div>
+          )}
           <form onSubmit={handleLogin} className="flex flex-col gap-4">
             <Input
               autoFocus
@@ -74,7 +137,7 @@ export default function LoginPage() {
               isRequired
             />
             <div className="flex justify-end">
-              <Link href="#" size="sm">
+              <Link href="/auth/forgot-password" size="sm">
                 Forgot password?
               </Link>
             </div>
@@ -93,8 +156,8 @@ export default function LoginPage() {
         <CardFooter className="flex flex-col items-center gap-2">
           <p className="text-sm text-default-500">
             Don't have an account?{" "}
-            <Link href="#" size="sm">
-              Contact your administrator
+            <Link href="/auth/register" size="sm">
+              Register here
             </Link>
           </p>
           <p className="text-xs text-default-400">

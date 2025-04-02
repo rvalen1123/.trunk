@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardBody, CardHeader, Divider } from '@nextui-org/react';
-import { Tabs, Tab } from '@nextui-org/react';
-import { Input, Select, SelectItem, Textarea, Button, Checkbox } from '@nextui-org/react';
+import { Card, CardBody, CardHeader, Divider } from '@heroui/react';
+import { Tabs, Tab } from '@heroui/react';
+import { Input, Select, SelectItem, Textarea, Button, Checkbox } from '@heroui/react';
 import { useForm, Controller, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';

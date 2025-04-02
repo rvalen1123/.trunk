@@ -8,8 +8,9 @@ import {
   Divider,
   Tabs,
   Tab,
-  Grid,
-} from "@nextui-org/react";
+  Select,
+  SelectItem,
+} from "@heroui/react";
 import StatCard from "@/components/dashboard/stat-card";
 import ChartCard from "@/components/dashboard/chart-card";
 import CommissionTable from "@/components/dashboard/commission-table";

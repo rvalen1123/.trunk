@@ -4,15 +4,14 @@ import React, { useState } from "react";
 import {
   Card,
   CardBody,
-  CardFooter,
-  Button,
+  CardHeader,
+  Divider,
   Input,
-  Textarea,
   Select,
   SelectItem,
-  Divider,
-  Chip,
-} from "@nextui-org/react";
+  Textarea,
+  Button,
+} from "@heroui/react";
 import { DocumentTextIcon } from "@heroicons/react/24/outline";
 
 interface DocumentFormProps {

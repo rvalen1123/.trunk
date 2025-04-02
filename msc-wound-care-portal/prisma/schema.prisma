@@ -1,0 +1,209 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User model with roles
+model User {
+  id                 String               @id @default(uuid())
+  email              String               @unique
+  password           String
+  firstName          String
+  lastName           String
+  role               UserRole             @default(STAFF)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  active             Boolean              @default(true)
+  passwordResetToken String?
+  resetTokenExpiry   DateTime?
+  parentId           String?              @map("parent_id")
+  parent             User?                @relation("UserHierarchy", fields: [parentId], references: [id])
+  subordinates       User[]               @relation("UserHierarchy")
+  facilities         FacilityUser[]
+  createdDocuments   Document[]           @relation("CreatedBy")
+  updatedDocuments   Document[]           @relation("UpdatedBy")
+  orders             Order[]
+  aiInteractions     AIInteraction[]
+  commissionRules    CommissionRule[]     @relation("CreatedByUser")
+  commissionPayouts  CommissionPayout[]
+  dashboardPreferences DashboardPreference[]
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+  REP
+  SUB_REP
+}
+
+// Facility model
+model Facility {
+  id          String         @id @default(uuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  zip         String
+  phone       String
+  email       String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  active      Boolean        @default(true)
+  users       FacilityUser[]
+  documents   Document[]
+  orders      Order[]
+}
+
+model FacilityUser {
+  id         String   @id @default(uuid())
+  userId     String
+  facilityId String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  facility   Facility @relation(fields: [facilityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, facilityId])
+}
+
+// Product model
+model Product {
+  id          String        @id @default(uuid())
+  name        String
+  description String
+  sku         String        @unique
+  price       Decimal       @db.Decimal(10, 2)
+  category    String
+  active      Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  orderItems  OrderItem[]
+}
+
+// Order model
+model Order {
+  id         String      @id @default(uuid())
+  userId     String
+  facilityId String
+  status     OrderStatus @default(PENDING)
+  total      Decimal     @db.Decimal(10, 2)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  items      OrderItem[]
+  user       User        @relation(fields: [userId], references: [id])
+  facility   Facility    @relation(fields: [facilityId], references: [id])
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal  @db.Decimal(10, 2)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+enum OrderStatus {
+  PENDING
+  APPROVED
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+// Document model
+model Document {
+  id           String       @id @default(uuid())
+  title        String
+  type         DocumentType
+  content      Json
+  facilityId   String?
+  createdById  String
+  updatedById  String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  createdBy    User         @relation("CreatedBy", fields: [createdById], references: [id])
+  updatedBy    User         @relation("UpdatedBy", fields: [updatedById], references: [id])
+  facility     Facility?    @relation(fields: [facilityId], references: [id])
+}
+
+enum DocumentType {
+  BAA
+  PRIOR_AUTH
+  WOUND_ASSESSMENT
+  ORDER_FORM
+  TRAINING
+  OTHER
+}
+
+// AI Interaction model
+model AIInteraction {
+  id        String    @id @default(uuid())
+  userId    String
+  type      AIType
+  prompt    String
+  response  String
+  metadata  Json?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id])
+}
+
+enum AIType {
+  PRODUCT_RECOMMENDATION
+  TRAINING_ASSISTANT
+  DOCUMENT_ANALYSIS
+  FORM_COMPLETION
+}
+
+// Commission models
+model CommissionRule {
+  id        String   @id @default(uuid())
+  name      String
+  rule      Json
+  createdBy String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  creator   User     @relation("CreatedByUser", fields: [createdBy], references: [id])
+}
+
+model CommissionPayout {
+  id         String   @id @default(uuid())
+  userId     String
+  amount     Decimal  @db.Decimal(10, 2)
+  period     String
+  status     String
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+// Dashboard preference model
+model DashboardPreference {
+  id        String   @id @default(uuid())
+  userId    String
+  widgetId  String
+  enabled   Boolean  @default(true)
+  position  Int      @default(0)
+  size      String   @default("medium") // small, medium, large
+  customProps Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, widgetId])
+}

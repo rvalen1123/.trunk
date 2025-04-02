@@ -2,20 +2,24 @@
 
 import React, { useState } from "react";
 import {
-  Tabs,
-  Tab,
   Card,
   CardBody,
   CardHeader,
   Divider,
+  Tabs,
+  Tab,
+  Input,
   Button,
+  Select,
+  SelectItem,
+  Spacer,
   Modal,
   ModalContent,
   ModalHeader,
   ModalBody,
   ModalFooter,
   useDisclosure,
-} from "@nextui-org/react";
+} from "@heroui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import DocumentList from "@/components/documents/document-list";
 import DocumentForm from "@/components/documents/document-form";

@@ -1,8 +1,21 @@
 "use client";
 
-import React from "react";
-import { Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import React, { useState } from "react";
+import {
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
+  Tabs,
+  Tab,
+  Input,
+  Button,
+  Select,
+  SelectItem,
+  Spacer,
+} from "@heroui/react";
 import ChatInterface from "@/components/ai/chat-interface";
+import DocumentList from "@/components/documents/document-list";
 
 export default function AIAssistantsPage() {
   return (

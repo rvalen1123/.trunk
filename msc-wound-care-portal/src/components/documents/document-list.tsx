@@ -8,18 +8,12 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Chip,
-  ChipProps,
-  Tooltip,
-  Button,
   Pagination,
-} from "@nextui-org/react";
-import {
-  EyeIcon,
-  PencilIcon,
-  TrashIcon,
-  ArrowDownTrayIcon,
-} from "@heroicons/react/24/outline";
+  Chip,
+  Tooltip,
+  IconButton,
+} from "@heroui/react";
+import { EyeIcon, PencilIcon, TrashIcon, ArrowDownTrayIcon } from "@heroicons/react/24/outline";
 
 interface Document {
   id: string;
@@ -120,37 +114,37 @@ export default function DocumentList({
           return (
             <div className="flex gap-1">
               <Tooltip content="View">
-                <Button
+                <IconButton
                   isIconOnly
                   size="sm"
                   variant="light"
                   onPress={() => onAction("view", document)}
                 >
                   <EyeIcon className="h-4 w-4" />
-                </Button>
+                </IconButton>
               </Tooltip>
               <Tooltip content="Edit">
-                <Button
+                <IconButton
                   isIconOnly
                   size="sm"
                   variant="light"
                   onPress={() => onAction("edit", document)}
                 >
                   <PencilIcon className="h-4 w-4" />
-                </Button>
+                </IconButton>
               </Tooltip>
               <Tooltip content="Download">
-                <Button
+                <IconButton
                   isIconOnly
                   size="sm"
                   variant="light"
                   onPress={() => onAction("download", document)}
                 >
                   <ArrowDownTrayIcon className="h-4 w-4" />
-                </Button>
+                </IconButton>
               </Tooltip>
               <Tooltip content="Delete">
-                <Button
+                <IconButton
                   isIconOnly
                   size="sm"
                   variant="light"
@@ -158,7 +152,7 @@ export default function DocumentList({
                   onPress={() => onAction("delete", document)}
                 >
                   <TrashIcon className="h-4 w-4" />
-                </Button>
+                </IconButton>
               </Tooltip>
             </div>
           );

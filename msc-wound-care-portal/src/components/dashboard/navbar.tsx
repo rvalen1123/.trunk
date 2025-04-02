@@ -6,25 +6,25 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+  Link,
   Button,
-  DropdownTrigger,
   Dropdown,
+  DropdownTrigger,
   DropdownMenu,
   DropdownItem,
   Avatar,
-  Switch,
-} from "@nextui-org/react";
-import { SunIcon, MoonIcon, Bars3Icon } from "@heroicons/react/24/outline";
-import { useTheme } from "next-themes";
+} from "@heroui/react";
+import { Bars3Icon } from "@heroicons/react/24/outline";
+import ThemeToggle from "@/components/common/theme-toggle";
 
 interface NavbarProps {
   onMenuToggle: () => void;
 }
 
 export default function DashboardNavbar({ onMenuToggle }: NavbarProps) {
-  const { theme, setTheme } = useTheme();
-  const isDark = theme === "dark";
-
   return (
     <Navbar maxWidth="full" className="border-b border-divider">
       <NavbarContent className="sm:hidden">
@@ -44,14 +44,7 @@ export default function DashboardNavbar({ onMenuToggle }: NavbarProps) {
 
       <NavbarContent justify="end">
         <NavbarItem>
-          <Switch
-            defaultSelected={isDark}
-            size="sm"
-            color="primary"
-            startContent={<SunIcon className="h-4 w-4" />}
-            endContent={<MoonIcon className="h-4 w-4" />}
-            onChange={(e) => setTheme(e.target.checked ? "dark" : "light")}
-          />
+          <ThemeToggle />
         </NavbarItem>
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
