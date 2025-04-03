@@ -26,9 +26,9 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
   }
 
   return (
-    <div className={className}>
+    <div className={className} data-testid="theme-toggle-container">
       <Switch
-        defaultSelected={isDark}
+        isSelected={isDark} // Use isSelected instead of defaultSelected
         size="sm"
         color="primary"
         startContent={<SunIcon className="h-4 w-4" />}
@@ -37,4 +37,4 @@ export default function ThemeToggle({ className = "" }: { className?: string }) 
       />
     </div>
   );
-} 
+}
